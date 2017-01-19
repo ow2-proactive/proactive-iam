@@ -1,8 +1,4 @@
 rootProject.name = 'proactive-iam'
 
-include 'proactive-iam-annotations'
-include 'proactive-iam-aop'
-include 'proactive-iam-bean'
-include 'proactive-iam-core'
-include 'proactive-iam-rest-client'
-include 'proactive-iam-rest-api'
+include 'proactive-iam-api-client'
+include 'proactive-iam-api'

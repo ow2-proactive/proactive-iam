@@ -53,25 +53,6 @@ allprojects {
         jcenter()
     }
 
-    dependencies {
-        compile 'org.projectlombok:lombok:1.16.12'
-        compile 'com.google.guava:guava:19.0'
-        compile "org.springframework.boot:spring-boot-dependencies:1.4.3.RELEASE"
-        compile('org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE') {
-            exclude module: 'spring-boot-starter-tomcat'
-            exclude module: 'spring-boot-starter-validation'
-        }
-        compile 'org.springframework.boot:spring-boot-starter-log4j2:1.4.3.RELEASE'
-        compile 'org.springframework:spring-web:4.2.5.RELEASE'
-
-        testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-        testCompile 'com.google.truth:truth:0.30'
-        testCompile 'junit:junit:4.12'
-        testCompile "org.assertj:assertj-core:2.0.0"
-        testCompile 'nl.jqno.equalsverifier:equalsverifier:2.0.2'
-        testCompile 'org.mockito:mockito-core:1.10.19'
-    }
-
     uploadArchives {
         repositories {
             mavenDeployer {
@@ -97,21 +78,46 @@ allprojects {
         }
     }
 
-    test {
-        sonarqube {
-            properties {
-                property "sonar.projectKey", "$project.group:iam"
-                property "sonar.projectName", "iam"
-                property "sonar.jdbc.driverClassName", "org.postgresql.Driver"
-                property "sonar.language", "java"
-                property "sonar.sources", "src/main"
-                property 'sonar.jacoco.reportPath', "${buildDir}/jacoco/testDebug.exec"
-                property 'sonar.junit.reportsPath', "${buildDir}/test-results"
-            }
-        }
+    configurations {
+        // The following module is excluded to avoid clashes when embedded inside the ProActive Scheduler
+        all*.exclude module: 'spring-boot-starter-logging'
 
-        jacoco {
-            destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        integrationTestCompile.extendsFrom testCompile
+        integrationTestRuntime.extendsFrom testRuntime
+    }
+
+    dependencies {
+        compile 'org.projectlombok:lombok:1.16.12'
+        compile 'com.google.guava:guava:19.0'
+        compile "org.springframework.boot:spring-boot-dependencies:1.4.3.RELEASE"
+        compile('org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE') {
+            exclude module: 'spring-boot-starter-tomcat'
+            exclude module: 'spring-boot-starter-validation'
+        }
+        compile 'org.springframework.boot:spring-boot-starter-log4j2:1.4.3.RELEASE'
+        compile 'org.springframework:spring-web:4.2.5.RELEASE'
+
+        compile "org.apache.shiro:shiro-core:${shiroVersion}"
+        compile "org.apache.shiro:shiro-spring:${shiroVersion}"
+        compile "org.apache.shiro:shiro-ehcache:${shiroVersion}"
+        compile "org.apache.shiro:shiro-web:${shiroVersion}"
+
+        testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+        testCompile 'com.google.truth:truth:0.30'
+        testCompile 'junit:junit:4.12'
+        testCompile 'nl.jqno.equalsverifier:equalsverifier:2.0.2'
+        testCompile 'org.mockito:mockito-core:1.10.19'
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.projectKey", "$project.group:iam"
+            property "sonar.projectName", "iam"
+            property "sonar.jdbc.driverClassName", "org.postgresql.Driver"
+            property "sonar.language", "java"
+            property "sonar.sources", "src/main"
+            property 'sonar.jacoco.reportPath', "${buildDir}/jacoco/testDebug.exec"
+            property 'sonar.junit.reportsPath', "${buildDir}/test-results"
         }
     }
 
@@ -119,6 +125,7 @@ allprojects {
         testClassesDir = sourceSets.integrationTest.output.classesDir
         classpath = sourceSets.integrationTest.runtimeClasspath
         classpath += sourceSets.test.runtimeClasspath
+        outputs.upToDateWhen { false }
 
         testLogging {
             events "passed", "skipped", "failed"
@@ -136,16 +143,6 @@ allprojects {
         }
     }
 
-    check.dependsOn integrationTest
-
-    configurations {
-        // The following module is excluded to avoid clashes when embedded inside the ProActive Scheduler
-        all*.exclude module: 'spring-boot-starter-logging'
-
-        integrationTestCompile.extendsFrom testCompile
-        integrationTestRuntime.extendsFrom testRuntime
-    }
-
     coveralls {
         sourceDirs = allprojects.sourceSets.main.allSource.srcDirs.flatten()
         jacocoReportPath = "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
@@ -156,7 +153,7 @@ allprojects {
     }
 
     check.dependsOn integrationTest
-
+    integrationTest.mustRunAfter test
     jacocoTestReport.dependsOn check
     tasks.coveralls.dependsOn jacocoTestReport
 

@@ -1,4 +1,0 @@
-dependencies {
-    compile project(":proactive-iam-bean")
-    compile project(":proactive-iam-annotations")
-}
