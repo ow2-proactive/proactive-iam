@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.shiro.SecurityUtils;
 import org.ow2.proactive.iam.rest.model.User;
 import org.springframework.stereotype.Service;
 
@@ -63,4 +64,11 @@ public class UserService {
         users.clear();
     }
 
+    public User getCurrentUser() {
+        final String currentUserName = (String) SecurityUtils.getSubject().getPrincipal();
+        if (currentUserName != null) {
+            return findByName(currentUserName).orElse(null);
+        }
+        return null;
+    }
 }

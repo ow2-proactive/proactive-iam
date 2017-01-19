@@ -46,8 +46,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class SecurityController {
 
+    private final LoginValidator loginValidator;
+
     @Autowired
-    private LoginValidator loginValidator;
+    public SecurityController(LoginValidator loginValidator) {
+        this.loginValidator = loginValidator;
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String showLoginForm(Model model, @ModelAttribute LoginCommand command) {

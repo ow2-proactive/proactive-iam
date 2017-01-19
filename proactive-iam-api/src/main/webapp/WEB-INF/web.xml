@@ -26,11 +26,11 @@
 
     <filter-mapping>
         <filter-name>shiroFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
+        <url-pattern>/s/*</url-pattern>
+        <!--<dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
-        <dispatcher>ERROR</dispatcher>
+        <dispatcher>ERROR</dispatcher>-->
     </filter-mapping>
 
     <servlet>
@@ -45,7 +45,22 @@
 
     <servlet-mapping>
         <servlet-name>appServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/s/*</url-pattern>
     </servlet-mapping>
+
+    <!-- Welcome file list -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/unauthorized.jsp</location>
+    </error-page>
+
+    <session-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
 
 </web-app>

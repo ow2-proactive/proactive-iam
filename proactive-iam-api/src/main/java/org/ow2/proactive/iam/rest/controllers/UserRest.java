@@ -48,8 +48,12 @@ public class UserRest {
 
     private final Logger logger = LogManager.getRootLogger();
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserRest(UserService userService) {
+        this.userService = userService;
+    }
 
     //-------------------Retrieve All Users--------------------------------------------------------
 

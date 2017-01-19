@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apache Shiro Spring-Hibernate Sample Application</title>
+    <link rel="stylesheet" type="text/css" href=/styles/sample.css"/>
+</head>
+<body>
+<div id="box">
+    <div class="title">Apache Shiro Sample App - Login</div>
+
+    <div class="content">
+        <form modelAttribute="loginCommand" name="loginForm">
+
+            <div><div class="form-label">Username:</div><input name="username"/></div>
+            <div><div class="form-label">Password:</div><input name="password" type="password"/></div>
+            <div><input type="submit" value="Login"/></div>
+        </form>
+    </div>
+</div>
+
+<p>
+    Users created through the signup form have the role "user".  You can also log in as admin/admin, which has the
+    "admin" role.
+</p>
+
+<script type="text/javascript">
+    document.getElementById('username').focus();
+</script>
+
+</body>
+</html>
