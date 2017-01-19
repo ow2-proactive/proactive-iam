@@ -43,8 +43,12 @@
 
     <bean id="ldapRealm" class="org.apache.shiro.realm.ldap.DefaultLdapRealm">
         <property name="userDnTemplate" value="uid={0},dc=activeeon,dc=com"/>
-        <property name="contextFactory.url" value="ldap://192.168.1.136:389"/>
-        <property name="contextFactory.authenticationMechanism" value="DIGEST-MD5"/>
+        <property name="contextFactory" ref="contextFactory" />
+    </bean>
+
+    <bean id="contextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
+        <property name="url" value="ldap://192.168.1.136:389"/>
+        <property name="authenticationMechanism" value="DIGEST-MD5"/>
     </bean>
 
     <bean id="ehcache" class="org.apache.shiro.cache.ehcache.EhCacheManager">
