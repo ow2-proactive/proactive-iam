@@ -44,14 +44,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/users/")
-public class UserRest {
+public class UserController {
 
     private final Logger logger = LogManager.getRootLogger();
 
     private final UserService userService;
 
     @Autowired
-    public UserRest(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
