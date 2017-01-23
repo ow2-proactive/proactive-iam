@@ -1,24 +1,39 @@
+
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
         maven { url "http://repo.spring.io/libs-snapshot" }
     }
-
-    dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE'
-    }
-
 }
 
-apply plugin: 'eclipse'
+//apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'jetty'
+
+task explodedWar(type: Copy) {
+    into "$buildDir/exploded"
+    with war
+}
+war.dependsOn explodedWar
+
+jettyRun {
+    httpPort = 9000
+    contextPath = '/'
+    webAppSourceDirectory = file("build/exploded/")
+}
+
+jettyRunWar {
+    httpPort = 9000
+    contextPath = '/'
+}
 
 bootRepackage {
     enabled = true
+    mainClass = 'org.ow2.proactive.iam.Application'
 }
 
 springBoot {
@@ -28,23 +43,17 @@ springBoot {
 war {
     baseName = 'proactive-iam'
     version = version
+    //from 'src/main/webapp'
+    webInf { from 'src/main/webapp/WEB-INF/' }
 }
 
 configurations {
-    compile.exclude module: "spring-boot-starter-tomcat"
+    compile.exclude module: 'spring-boot-starter-tomcat'
+    compile.exclude module: 'spring-boot-starter-validation'
+    compile.exclude module: 'hibernate-entitymanager'
 }
 
 dependencies {
-
-    //compile files("src/main/webapp/WEB-INF")
-
-    //compile 'javax.servlet:javax.servlet-api:3.1.0'
-
-    //compile('org.springframework.boot:spring-boot-starter-aop')
-    //compile('org.springframework.boot:spring-boot-starter-redis')
-    //compile('org.springframework.session:spring-session')
-    //compile('org.springframework.boot:spring-boot-devtools')
-    //compile('org.springframework.boot:spring-boot-configuration-processor')
 
     compile 'commons-fileupload:commons-fileupload:1.3.1'
     compile 'org.springframework.hateoas:spring-hateoas:0.19.0.RELEASE'
@@ -53,18 +62,18 @@ dependencies {
     compile 'io.springfox:springfox-swagger2:2.4.0'
     compile 'io.springfox:springfox-swagger-ui:2.4.0'
 
-    /*compile('org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE') {
+    // SPRING
+    compile "org.springframework.boot:spring-boot-configuration-processor:1.4.3.RELEASE"
+    compile "org.springframework.boot:spring-boot-dependencies:1.4.3.RELEASE"
+    compile 'org.springframework.boot:spring-boot-starter-parent:1.4.3.RELEASE'
+    compile ("org.springframework.boot:spring-boot-starter-web:1.4.3.RELEASE") {
         exclude module: 'hibernate-entitymanager'
         exclude module: 'spring-boot-starter-validation'
         exclude module: 'spring-boot-starter-tomcat'
-    }*/
-
-    // SPRING
-    //compile "org.springframework.boot:spring-boot-dependencies:1.4.3.RELEASE"
-    compile ("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: 'spring-boot-starter-tomcat'
     }
-    compile 'org.springframework.boot:spring-boot-starter-log4j2'
+    compile 'org.springframework.boot:spring-boot-starter-log4j2:1.4.3.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-jetty:1.4.3.RELEASE'
+    compile 'org.apache.logging.log4j:log4j-web:2.7'
 
     // SHIRO
     compile "org.apache.shiro:shiro-core:${shiroVersion}"
@@ -72,10 +81,6 @@ dependencies {
     compile "org.apache.shiro:shiro-ehcache:${shiroVersion}"
     compile "org.apache.shiro:shiro-web:${shiroVersion}"
 
-    //compile "javax.servlet:javax.servlet-api:4.0.0-b01"
-
-    compile 'org.springframework.boot:spring-boot-starter-jetty'
-
     testCompile 'com.jayway.restassured:rest-assured:2.9.0'
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.springframework.boot:spring-boot-starter-test:1.4.3.RELEASE'
 }

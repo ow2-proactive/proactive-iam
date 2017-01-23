@@ -4,9 +4,11 @@ buildscript {
         jcenter()
         maven { url 'http://repository.activeeon.com/content/groups/proactive/' }
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "http://repo.spring.io/libs-snapshot" }
     }
 
     dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE"
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.7.1'
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
         classpath "com.diffplug.gradle.spotless:spotless:2.4.0"
@@ -14,7 +16,6 @@ buildscript {
         delete "gradle/ext"
         ant.unjar src: configurations.classpath.find { it.name.startsWith("coding-rules") }, dest: 'gradle/ext'
     }
-
 }
 
 plugins {
@@ -22,6 +23,7 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven'
+    id 'war'
 }
 
 apply plugin: 'org.sonarqube'
@@ -35,6 +37,7 @@ allprojects {
     apply plugin: 'com.github.kt3k.coveralls'
     apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: 'war'
 
     group = 'org.ow2.proactive'
     version = version

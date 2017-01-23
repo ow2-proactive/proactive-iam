@@ -27,15 +27,17 @@ package org.ow2.proactive.iam.rest.controllers;
 
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ow2.proactive.iam.rest.model.User;
 import org.ow2.proactive.iam.rest.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -46,7 +48,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/users/")
 public class UserController {
 
-    private final Logger logger = LogManager.getRootLogger();
+    //private final Logger logger = LogManager.getRootLogger();
 
     private final UserService userService;
 
@@ -70,7 +72,7 @@ public class UserController {
 
     @RequestMapping(value = "{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUser(@PathVariable("name") String name) {
-        logger.debug("Fetching User with name " + name);
+        //logger.debug("Fetching User with name " + name);
         return userService.findByName(name)
                           .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                           .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -81,7 +83,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        logger.debug("Creating User " + user.getName());
+        //logger.debug("Creating User " + user.getName());
         return userService.findByName(user.getName())
                           .map(userFound -> new ResponseEntity<>(userFound, HttpStatus.CONFLICT))
                           .orElseGet(() -> {
@@ -94,7 +96,7 @@ public class UserController {
 
     @RequestMapping(value = "{name}", method = RequestMethod.PUT)
     public ResponseEntity<User> updateUser(@PathVariable("name") String name, @RequestBody User user) {
-        logger.debug("Updating User " + name);
+        //logger.debug("Updating User " + name);
 
         return userService.findByName(name).map(userFound -> {
             userService.updateUser(user);
@@ -107,7 +109,7 @@ public class UserController {
 
     @RequestMapping(value = "{name}", method = RequestMethod.DELETE)
     public ResponseEntity<User> deleteUser(@PathVariable("name") String name) {
-        logger.debug("Fetching & Deleting User with name " + name);
+        //logger.debug("Fetching & Deleting User with name " + name);
 
         return userService.findByName(name).map(userFound -> {
             userService.deleteUserByName(name);
@@ -120,7 +122,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<User> deleteAllUsers() {
-        logger.debug("Deleting All Users");
+        //logger.debug("Deleting All Users");
         userService.deleteAllUsers();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

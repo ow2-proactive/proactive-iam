@@ -14,13 +14,13 @@
     <context:component-scan base-package="org.ow2.proactive.iam" />
     <!-- Scans for annotated @Controllers in the classpath -->
 
-    <mvc:annotation-driven />
+    <!--<mvc:annotation-driven />-->
 
     <bean class="org.ow2.proactive.iam.rest.controllers.SecurityController" />
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
 

@@ -26,11 +26,10 @@
                 <ref bean="iniRealm"/>
             </list>
         </property>
-        <property name="sessionMode" value="native"/>
 
         <!-- By default the servlet container sessions will be used.  Uncomment this line
              to use shiro's native sessions (see the JavaDoc for more): -->
-        <!-- <property name="sessionMode" value="native"/> -->
+        <property name="sessionMode" value="native"/>
     </bean>
 
     <bean id="iniRealm" class="org.apache.shiro.realm.text.IniRealm">
@@ -38,13 +37,14 @@
     </bean>
 
     <bean id="ldapRealm" class="org.apache.shiro.realm.ldap.DefaultLdapRealm">
-        <property name="userDnTemplate" value="uid={0},dc=activeeon,dc=com"/>
+        <property name="userDnTemplate" value="cn={0},dc=activeeon,dc=com"/>
         <property name="contextFactory" ref="contextFactory" />
     </bean>
 
     <bean id="contextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
+
         <property name="url" value="ldap://192.168.1.136:389"/>
-        <property name="authenticationMechanism" value="DIGEST-MD5"/>
+        <property name="authenticationMechanism" value="simple"/>
     </bean>
 
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -70,12 +70,6 @@
                 /login.jsp = anon
             </value>
         </property>
-    </bean>
-
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
     </bean>
 
     <!-- Define any javax.servlet.Filter beans you want anywhere in this application context.   -->

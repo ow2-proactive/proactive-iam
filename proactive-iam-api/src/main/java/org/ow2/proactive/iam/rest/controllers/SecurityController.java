@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @since 18/01/17
  */
 @Controller
+@RequestMapping("/")
 public class SecurityController {
 
     private final LoginValidator loginValidator;
@@ -53,10 +54,19 @@ public class SecurityController {
         this.loginValidator = loginValidator;
     }
 
+    @RequestMapping(value = "/")
+    public String showMainPage(Model model, @ModelAttribute LoginCommand command) {
+        return "redirect:/login";
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String showLoginForm(Model model, @ModelAttribute LoginCommand command) {
-        //return "redirect:/WEB-INF/login.jsp";
         return "login";
+    }
+
+    @RequestMapping(value = "/home", method = RequestMethod.GET)
+    public String showUserHome(Model model, @ModelAttribute LoginCommand command) {
+        return "home";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
