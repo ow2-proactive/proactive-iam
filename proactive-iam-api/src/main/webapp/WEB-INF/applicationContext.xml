@@ -32,7 +32,7 @@
     <!--<bean id="ldapRealm" class="org.apache.shiro.realm.ldap.DefaultLdapRealm">-->
     <bean id="ldapRealm" class="org.ow2.proactive.iam.realms.LdapRealm">
         <property name="userDnTemplate" value="cn={0},ou=users,dc=activeeon,dc=com"/>
-        <property name="contextFactory" ref="contextFactory" />
+        <property name="contextFactory" ref="ldapContextFactory" />
         <property name="searchBase" value="dc=activeeon,dc=com"/>
         <property name="principalSuffix" value=""/>
         <property name="groupRolesMap">
@@ -44,7 +44,7 @@
         <property name="searchFilter" value="(&amp;(objectClass=*)(cn={0}))"/>
     </bean>
 
-    <bean id="contextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
+    <bean id="ldapContextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
         <property name="url" value="ldap://192.168.1.136:389"/>
         <property name="authenticationMechanism" value="simple"/>
     </bean>
