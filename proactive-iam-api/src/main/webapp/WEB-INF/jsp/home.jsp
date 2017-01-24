@@ -36,6 +36,10 @@
                 Admin user! => <a href="<c:url value="/admin"/>">Admin page</a>
             </shiro:hasRole>
 
+            <shiro:hasRole name="user">
+                Regular user.
+            </shiro:hasRole>
+
             <shiro:lacksRole name="admin">
                 Not an admin user, but still you can try accessing the <a href="<c:url value="/admin"/>">Admin page</a> B-)
             </shiro:lacksRole>
