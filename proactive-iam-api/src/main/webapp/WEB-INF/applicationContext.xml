@@ -82,6 +82,7 @@
             <value>
                 # some example chain definitions:
                 #/admin/** = authc, roles[admin]
+                #/docs/** = authc, perms[document:read]
                 /home = authc
                 /login = anon
                 /index = anon
