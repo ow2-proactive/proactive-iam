@@ -38,12 +38,18 @@
 
     <!--<bean id="ldapRealm" class="org.apache.shiro.realm.activedirectory.ActiveDirectoryRealm">-->
     <!--<bean id="ldapRealm" class="org.apache.shiro.realm.ldap.DefaultLdapRealm">-->
+
     <bean id="ldapRealm" class="org.ow2.proactive.iam.realms.LdapRealm">
         <property name="userDnTemplate" value="cn={0},ou=users,dc=activeeon,dc=com"/>
         <property name="contextFactory" ref="contextFactory" />
         <property name="searchBase" value="dc=activeeon,dc=com"/>
         <property name="principalSuffix" value=""/>
-        <!--<property name="searchFilter" value="(&amp;(objectClass=*)(userPrincipalName={0}))"/>-->
+        <property name="groupRolesMap">
+            <map>
+                <entry key="cn=admin,ou=groups,dc=activeeon,dc=com" value="admin"/>
+            </map>
+        </property>
+        <property name="searchFilter" value="(&amp;(objectClass=*)(cn={0}))"/>
     </bean>
 
     <bean id="contextFactory" class="org.apache.shiro.realm.ldap.DefaultLdapContextFactory">

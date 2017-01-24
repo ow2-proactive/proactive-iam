@@ -8,6 +8,7 @@ buildscript {
     }
 
     dependencies {
+        //classpath "org.akhikhl.gretty:gretty:+"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE"
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.7.1'
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"

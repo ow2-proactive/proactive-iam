@@ -40,12 +40,13 @@
         </ul>
 
         <p>
-        <shiro:hasPermission name="user:manage">
-            Admin user!
-        </shiro:hasPermission>
-        <shiro:lacksPermission name="user:manage">
-            Not an admin user
-        </shiro:lacksPermission>
+            <shiro:hasRole name="admin">
+                Admin user!
+            </shiro:hasRole>
+
+            <shiro:lacksRole name="admin">
+                Not an admin user
+            </shiro:lacksRole>
         </p>
     </div>
 
