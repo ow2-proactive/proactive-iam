@@ -29,8 +29,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.ow2.proactive.iam.rest.commands.LoginCommand;
-import org.ow2.proactive.iam.rest.validators.LoginValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,14 +44,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/")
 public class SecurityController {
-
+/*
     private final LoginValidator loginValidator;
 
     @Autowired
     public SecurityController(LoginValidator loginValidator) {
         this.loginValidator = loginValidator;
     }
-
+*/
     @RequestMapping(value = "/")
     public String showMainPage(Model model, @ModelAttribute LoginCommand command) {
         return "index";
@@ -71,7 +69,7 @@ public class SecurityController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(Model model, @ModelAttribute LoginCommand command, BindingResult errors) {
-        loginValidator.validate(command, errors);
+        //loginValidator.validate(command, errors);
 
         if (errors.hasErrors()) {
             return showLoginForm(model, command);
