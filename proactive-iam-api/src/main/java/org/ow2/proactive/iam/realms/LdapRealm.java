@@ -50,7 +50,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.ldap.UnsupportedAuthenticationMechanismException;
 import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.realm.ldap.DefaultLdapContextFactory;
 import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
 import org.apache.shiro.realm.ldap.LdapContextFactory;
 import org.apache.shiro.realm.ldap.LdapUtils;
@@ -141,7 +140,6 @@ public class LdapRealm extends AuthorizingRealm {
      * <tt>LdapContextFactory</tt> is specified.
      *
      * @param principalSuffix the suffix.
-     * @see DefaultLdapContextFactory#setPrincipalSuffix(String)
      */
     public void setPrincipalSuffix(String principalSuffix) {
         this.principalSuffix = principalSuffix;
@@ -152,7 +150,6 @@ public class LdapRealm extends AuthorizingRealm {
      * <tt>LdapContextFactory</tt> is specified.
      *
      * @param searchBase the search base.
-     * @see DefaultLdapContextFactory#setSearchBase(String)
      */
     public void setSearchBase(String searchBase) {
         this.searchBase = searchBase;
