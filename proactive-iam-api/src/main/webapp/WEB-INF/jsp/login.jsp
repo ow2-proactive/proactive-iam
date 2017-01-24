@@ -41,14 +41,8 @@
         </div>
     </div>
 
-    <p>
-        Users created through the signup form have the role "user".  You can also log in as admin/admin, which has the
-        "admin" role.
-    </p>
-
     <script type="text/javascript">
         document.getElementById('username').focus();
     </script>
-
 </body>
 </html>

@@ -98,16 +98,15 @@ public class Application extends WebMvcConfigurerAdapter {
         return SecurityUtils.getSubject();
     }
 
-
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.favorPathExtension(false)
-                .favorParameter(true)
-                .parameterName("format")
-                .ignoreAcceptHeader(true)
-                .useJaf(false)
-                .defaultContentType(MediaType.APPLICATION_JSON)
-                .mediaType("json", MediaType.APPLICATION_JSON);
+                  .favorParameter(true)
+                  .parameterName("format")
+                  .ignoreAcceptHeader(true)
+                  .useJaf(false)
+                  .defaultContentType(MediaType.APPLICATION_JSON)
+                  .mediaType("json", MediaType.APPLICATION_JSON);
     }
 
     @Bean
@@ -121,18 +120,18 @@ public class Application extends WebMvcConfigurerAdapter {
     @Bean
     public Docket iamApi() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-                .groupName("proactive-iam")
-                .select()
-                .paths(allowedPaths())
-                .build();
+                                                      .groupName("proactive-iam")
+                                                      .select()
+                                                      .paths(allowedPaths())
+                                                      .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("ProActive IAM REST API")
-                .description("The purpose of ProActive IAM is ...\n")
-                .licenseUrl("https://github.com/ow2-proactive/proactive-iam/blob/master/LICENSE")
-                .version("1.0")
-                .build();
+                                   .description("The purpose of ProActive IAM is ...\n")
+                                   .licenseUrl("https://github.com/ow2-proactive/proactive-iam/blob/master/LICENSE")
+                                   .version("1.0")
+                                   .build();
     }
 
     private Predicate<String> allowedPaths() {

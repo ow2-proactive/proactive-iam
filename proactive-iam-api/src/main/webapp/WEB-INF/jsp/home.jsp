@@ -27,7 +27,7 @@
 <body>
 
 <div id="bigbox">
-    <div class="title clearfix"><div style="float: left">Apache Shiro Sample App - Home</div><div class="info" >Logged in as ${currentUser.username} (<a href="<c:url value="/s/logout"/>">Logout</a>)</div></div>
+    <div class="title clearfix"><div style="float: left">Apache Shiro Sample App - Home</div><div class="info" >Logged in as ${currentUser.username} (<a href="<c:url value="/logout"/>">Logout</a>)</div></div>
 
 
     <div class="content">

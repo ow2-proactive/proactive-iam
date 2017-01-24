@@ -56,7 +56,7 @@ public class SecurityController {
 
     @RequestMapping(value = "/")
     public String showMainPage(Model model, @ModelAttribute LoginCommand command) {
-        return "redirect:/login";
+        return "index";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -89,7 +89,6 @@ public class SecurityController {
         if (errors.hasErrors()) {
             return showLoginForm(model, command);
         } else {
-            //return new ModelAndView("home");
             return "redirect:/home";
         }
     }
