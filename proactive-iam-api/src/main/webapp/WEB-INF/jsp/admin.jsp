@@ -27,18 +27,12 @@
 <body>
 
 <div id="bigbox">
-    <div class="title clearfix"><div style="float: left">Apache Shiro Sample App - Home</div><div class="info" >Logged in (<a href="<c:url value="/logout"/>">Logout</a>)</div></div>
+    <div class="title clearfix"><div style="float: left">Apache Shiro Sample App - Admin</div><div class="info" >Logged in (<a href="<c:url value="/logout"/>">Logout</a>)</div></div>
 
     <div class="content">
 
         <p>
-            <shiro:hasRole name="admin">
-                Admin user! => <a href="<c:url value="/admin"/>">Admin page</a>
-            </shiro:hasRole>
-
-            <shiro:lacksRole name="admin">
-                Not an admin user, but still you can try accessing the <a href="<c:url value="/admin"/>">Admin page</a> B-)
-            </shiro:lacksRole>
+            You are in the admin page!
         </p>
     </div>
 </div>

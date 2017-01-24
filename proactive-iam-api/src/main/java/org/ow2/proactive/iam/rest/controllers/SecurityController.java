@@ -44,14 +44,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/")
 public class SecurityController {
-/*
-    private final LoginValidator loginValidator;
 
-    @Autowired
-    public SecurityController(LoginValidator loginValidator) {
-        this.loginValidator = loginValidator;
-    }
-*/
     @RequestMapping(value = "/")
     public String showMainPage(Model model, @ModelAttribute LoginCommand command) {
         return "index";
@@ -67,9 +60,13 @@ public class SecurityController {
         return "home";
     }
 
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String showAdminPage(Model model, @ModelAttribute LoginCommand command) {
+        return "admin";
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(Model model, @ModelAttribute LoginCommand command, BindingResult errors) {
-        //loginValidator.validate(command, errors);
 
         if (errors.hasErrors()) {
             return showLoginForm(model, command);
@@ -89,6 +86,11 @@ public class SecurityController {
         } else {
             return "redirect:/home";
         }
+    }
+
+    @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
+    public String showUnauthorized(Model model, @ModelAttribute LoginCommand command) {
+        return "unauthorized";
     }
 
     @RequestMapping("/logout")
