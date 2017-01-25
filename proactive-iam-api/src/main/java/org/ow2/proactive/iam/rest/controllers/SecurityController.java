@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author ActiveEon Team
  * @since 18/01/17
  */
-@Controller
+@Controller("security")
 @RequestMapping("/")
 public class SecurityController {
 
