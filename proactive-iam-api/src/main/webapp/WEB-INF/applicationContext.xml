@@ -109,9 +109,10 @@
     </bean>
 
     <!-- Secure Spring remoting:  Ensure any Spring Remoting method invocations -->
-    <!-- can be associated with a Subject for security checks. -->
+    <!-- can be associated with a Subject for security checks.
     <bean id="secureRemoteInvocationExecutor" class="org.apache.shiro.spring.remoting.SecureRemoteInvocationExecutor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
+    -->
 
 </beans>
