@@ -54,13 +54,20 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+    <!--
     <error-page>
         <error-code>401</error-code>
         <location>/WEB-INF/jsp/unauthorized.jsp</location>
     </error-page>
 
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error</location>
+    </error-page>
+
     <session-config>
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
+    -->
 
 </web-app>
