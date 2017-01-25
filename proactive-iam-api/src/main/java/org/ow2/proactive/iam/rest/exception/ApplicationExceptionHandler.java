@@ -47,6 +47,25 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler({ AuthenticationException.class, AuthorizationException.class, UnknownAccountException.class,
                         UnauthenticatedException.class, IncorrectCredentialsException.class,
                         UnauthorizedException.class })
-    public void unauthorized() {
+    public String unauthorized() {
+        return "unauthorized";
     }
+
+    /*
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleException(AuthorizationException e, Model model) {
+
+        // you could return a 404 here instead (this is how github handles 403, so the user does NOT know there is a
+        // resource at that location)
+        log.debug("AuthorizationException was thrown", e);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("status", HttpStatus.FORBIDDEN.value());
+        map.put("message", "No message available");
+        model.addAttribute("errors", map);
+
+        return "error";
+    }
+    */
 }

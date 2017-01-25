@@ -25,11 +25,7 @@
  */
 package org.ow2.proactive.iam;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +35,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -64,7 +55,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * @author ActiveEon Team
  */
-@ControllerAdvice
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = { MultipartAutoConfiguration.class })
 @EnableSwagger2
@@ -75,22 +65,6 @@ public class Application extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-    }
-
-    @ExceptionHandler(AuthorizationException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String handleException(AuthorizationException e, Model model) {
-
-        // you could return a 404 here instead (this is how github handles 403, so the user does NOT know there is a
-        // resource at that location)
-        log.debug("AuthorizationException was thrown", e);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("status", HttpStatus.FORBIDDEN.value());
-        map.put("message", "No message available");
-        model.addAttribute("errors", map);
-
-        return "error";
     }
 
     @ModelAttribute(name = "subject")
