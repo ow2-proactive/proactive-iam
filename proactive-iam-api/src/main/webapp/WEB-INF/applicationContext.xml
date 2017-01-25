@@ -84,7 +84,7 @@
         <property name="filterChainDefinitions">
             <value>
                 #/docs/** = authc, perms[document:read]
-                /admin = authc, roles[admin]
+                #/admin = authc, roles[admin]
                 /home = authc
                 /login = anon
                 /index = anon
