@@ -79,10 +79,6 @@ public class LdapRealm extends AuthorizingRealm {
 
     private String userDnSuffix;
 
-    /*--------------------------------------------
-    |    I N S T A N C E   V A R I A B L E S    |
-    ============================================*/
-
     protected String principalSuffix = null;
 
     protected String searchBase = null;
