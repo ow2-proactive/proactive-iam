@@ -45,8 +45,20 @@
     </bean>
 
     <bean id="ldapContextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
-        <property name="url" value="ldap://192.168.1.136:389"/>
+        <!--<property name="url" value="ldap://192.168.1.136:389"/>-->
+        <property name="url" value="ldaps://192.168.1.136:636"/>
         <property name="authenticationMechanism" value="simple"/>
+        <!-- If necessary, customize context with JNDI environment parameters -->
+        <!--
+        <property name="environment">
+            <map>
+                <entry key="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+                <entry key="java.naming.security.authentication" value="simple"/>
+                <entry key="java.naming.provider.url" value="ldap://192.168.1.136:636"/>
+                <entry key="java.naming.security.protocol" value="ssl"/>
+            </map>
+        </property>
+        -->
     </bean>
     <!--
     <bean id="contextFactory" class="org.apache.shiro.realm.ldap.DefaultLdapContextFactory">
