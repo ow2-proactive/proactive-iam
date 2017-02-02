@@ -183,6 +183,7 @@ tags
 
 # Package Files #
 *.jar
+!tools/**/*.jar
 *.war
 *.ear
 
