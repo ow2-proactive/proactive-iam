@@ -461,7 +461,7 @@ public class LdapRealm extends AuthorizingRealm {
         searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
         //Specify the attributes to return
-        String returnedAtts[]={"memberOf"};
+        String returnedAtts[] = { "memberOf" };
         searchCtls.setReturningAttributes(returnedAtts);
 
         String userPrincipalName = username;

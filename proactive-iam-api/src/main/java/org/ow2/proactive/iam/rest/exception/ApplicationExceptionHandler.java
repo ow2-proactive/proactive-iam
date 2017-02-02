@@ -52,20 +52,21 @@ public class ApplicationExceptionHandler {
     }
 
     /*
-    @ExceptionHandler(AuthorizationException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String handleException(AuthorizationException e, Model model) {
-
-        // you could return a 404 here instead (this is how github handles 403, so the user does NOT know there is a
-        // resource at that location)
-        log.debug("AuthorizationException was thrown", e);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("status", HttpStatus.FORBIDDEN.value());
-        map.put("message", "No message available");
-        model.addAttribute("errors", map);
-
-        return "error";
-    }
-    */
+     * @ExceptionHandler(AuthorizationException.class)
+     * 
+     * @ResponseStatus(HttpStatus.FORBIDDEN)
+     * public String handleException(AuthorizationException e, Model model) {
+     * 
+     * // you could return a 404 here instead (this is how github handles 403, so the user does NOT know there is a
+     * // resource at that location)
+     * log.debug("AuthorizationException was thrown", e);
+     * 
+     * Map<String, Object> map = new HashMap<String, Object>();
+     * map.put("status", HttpStatus.FORBIDDEN.value());
+     * map.put("message", "No message available");
+     * model.addAttribute("errors", map);
+     * 
+     * return "error";
+     * }
+     */
 }
