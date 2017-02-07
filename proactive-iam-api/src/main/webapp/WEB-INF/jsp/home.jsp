@@ -21,24 +21,36 @@
 
 <html>
 <head>
-    <title>Apache Shiro Spring-Hibernate Sample Application</title>
+    <title>ProActive IAM Sample Application</title>
     <link rel="stylesheet" type="text/css" href="<c:url value="/styles/sample.css"/>"/>
 </head>
 <body>
 
 <div id="bigbox">
-    <div class="title clearfix"><div style="float: left">Apache Shiro Sample App - Home</div><div class="info" >Logged in (<a href="<c:url value="/logout"/>">Logout</a>)</div></div>
+    <div class="title clearfix"><div style="float: left">ProActive IAM Sample App - Home</div><div class="info" >Logged in (<a href="<c:url value="/logout"/>">Logout</a>)</div></div>
 
     <div class="content">
-
         <p>
-            <shiro:hasAnyRoles name="adminfile,adminldap,adminpam">
+            <shiro:hasRole name="admin">
                 Admin user! => <a href="<c:url value="/admin"/>">Admin page</a>
-            </shiro:hasAnyRoles>
+            </shiro:hasRole>
 
-            <shiro:hasAnyRoles name="userfile,userldap,userpam">
-                Not an admin user, but still you can try accessing the <a href="<c:url value="/admin"/>">Admin page</a> B-)
-            </shiro:hasAnyRoles>
+            <shiro:lacksRole name="admin">
+                Not an admin user, but you can still try to access the <a href="<c:url value="/admin"/>">Admin page</a>
+            </shiro:lacksRole>
+        </p>
+        <p>
+            <shiro:hasRole name="file">
+                Logged via FILE
+            </shiro:hasRole>
+
+            <shiro:hasRole name="ldap">
+                Logged via LDAP
+            </shiro:hasRole>
+
+            <shiro:hasRole name="pam">
+                Logged via PAM
+            </shiro:hasRole>
         </p>
     </div>
 </div>

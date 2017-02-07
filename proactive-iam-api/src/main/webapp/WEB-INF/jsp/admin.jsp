@@ -21,31 +21,31 @@
 
 <html>
 <head>
-    <title>Apache Shiro Spring-Hibernate Sample Application</title>
+    <title>ProActive IAM Sample Application</title>
     <link rel="stylesheet" type="text/css" href="<c:url value="/styles/sample.css"/>"/>
 </head>
 <body>
 
 <div id="bigbox">
-    <div class="title clearfix"><div style="float: left">Apache Shiro Sample App - Admin</div><div class="info" >Logged in (<a href="<c:url value="/logout"/>">Logout</a>)</div></div>
+    <div class="title clearfix"><div style="float: left">ProActive IAM Sample App - Admin</div><div class="info" >Logged in (<a href="<c:url value="/logout"/>">Logout</a>)</div></div>
 
     <div class="content">
-
         <p>
             You are in the admin page!
         </p>
+        <p>
+            <shiro:hasRole name="file">
+                Logged via FILE
+            </shiro:hasRole>
 
-        <shiro:hasRole name="adminfile">
-            Logged via INI
-        </shiro:hasRole>
+            <shiro:hasRole name="ldap">
+                Logged via LDAP
+            </shiro:hasRole>
 
-        <shiro:hasRole name="adminldap">
-            Logged via LDAP
-        </shiro:hasRole>
-
-        <shiro:hasRole name="adminpam">
-            Logged via PAM
-        </shiro:hasRole>
+            <shiro:hasRole name="pam">
+                Logged via PAM
+            </shiro:hasRole>
+        </p>
     </div>
 </div>
 

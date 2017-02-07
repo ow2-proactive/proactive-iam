@@ -21,12 +21,12 @@
 
 <html>
 <head>
-    <title>Apache Shiro Spring-Hibernate Sample Application</title>
+    <title>ProActive IAM Sample Application</title>
     <link rel="stylesheet" type="text/css" href="<c:url value="/styles/sample.css"/>"/> 
 </head>
 <body>
     <div id="box">
-        <div class="title">Apache Shiro Sample App - Login</div>
+        <div class="title">ProActive IAM Sample App - Login</div>
 
         <div class="content">
             <form:form modelAttribute="loginCommand" name="loginForm">
