@@ -25,7 +25,10 @@
  */
 package org.ow2.proactive.iam.realms;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.shiro.ShiroException;
@@ -41,6 +44,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.jvnet.libpam.PAM;
 import org.jvnet.libpam.PAMException;
 import org.jvnet.libpam.UnixUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Unix-style <a href="http://www.kernel.org/pub/linux/libs/pam/index.html">PAM</a>
@@ -68,20 +73,52 @@ import org.jvnet.libpam.UnixUser;
  */
 public class PamRealm extends AuthorizingRealm {
 
+    private static final Logger log = LoggerFactory.getLogger(LdapRealm.class);
+
+    private static final String ROLE_NAMES_DELIMETER = ",";
+
     private String service;
+
+    private Map<String, String> groupRolesMap;
 
     public void setService(String service) {
         this.service = service;
     }
 
+    public void setGroupRolesMap(Map<String, String> groupRolesMap) {
+        this.groupRolesMap = groupRolesMap;
+    }
+
+    protected Collection<String> getRoleNamesForGroups(Collection<String> groupNames) {
+        Set<String> roleNames = new HashSet<String>(groupNames.size());
+
+        if (groupRolesMap != null) {
+            for (String groupName : groupNames) {
+                String strRoleNames = groupRolesMap.get(groupName);
+                if (strRoleNames != null) {
+                    for (String roleName : strRoleNames.split(ROLE_NAMES_DELIMETER)) {
+
+                        if (log.isDebugEnabled()) {
+                            log.debug("User is member of group [" + groupName + "] so adding role [" + roleName + "]");
+                        }
+
+                        roleNames.add(roleName);
+
+                    }
+                }
+            }
+        }
+        return roleNames;
+    }
+
     @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(
-            PrincipalCollection principals) {
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         Set<String> roles = new LinkedHashSet<String>();
 
         UnixUserPrincipal user = principals.oneByType(UnixUserPrincipal.class);
         if (user != null) {
-            roles.addAll(user.getUnixUser().getGroups());
+            // Convert PAM groups to Shiro's roles
+            roles.addAll(getRoleNamesForGroups(user.getUnixUser().getGroups()));
         }
         return new SimpleAuthorizationInfo(roles);
     }
