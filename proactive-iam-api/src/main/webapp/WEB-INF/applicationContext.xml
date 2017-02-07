@@ -30,7 +30,7 @@
         <property name="realms">
             <list>
                 <ref bean="iniRealm"/>
-                <ref bean="ldapRealm"/>
+                <!--<ref bean="ldapRealm"/>-->
                 <ref bean="pamRealm"/>
             </list>
         </property>
@@ -54,8 +54,9 @@
         <property name="principalSuffix" value=""/>
         <property name="groupRolesMap">
             <map>
-                <entry key="cn=admin,ou=groups,dc=activeeon,dc=com" value="adminldap"/>
-                <entry key="cn=user,ou=groups,dc=activeeon,dc=com" value="userldap"/>
+                <entry key="cn=admin,ou=groups,dc=activeeon,dc=com" value="admin"/>
+                <entry key="cn=user,ou=groups,dc=activeeon,dc=com" value="user"/>
+                <entry key="cn=ldap,ou=groups,dc=activeeon,dc=com" value="ldap"/>
             </map>
         </property>
         <property name="searchFilter" value="(&amp;(objectClass=*)(cn={0}))"/>
@@ -63,6 +64,13 @@
 
     <bean id="pamRealm" class="org.ow2.proactive.iam.realms.PamRealm">
         <property name="service" value="passwd"/>
+        <property name="groupRolesMap">
+            <map>
+                <entry key="vinseon" value="admin"/>
+                <entry key="vins" value="user"/>
+                <entry key="ssh" value="pam"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="ldapContextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
@@ -81,6 +89,8 @@
         </property>
         -->
     </bean>
+
+    <!-- Default Shiro's LDAP context Factory (Deprecated) -->
     <!--
     <bean id="contextFactory" class="org.apache.shiro.realm.ldap.DefaultLdapContextFactory">
         <property name="url" value="ldap://192.168.1.136:389"/>
@@ -90,22 +100,23 @@
 
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
-        <!-- override these for application-specific URLs if you like:-->
         <property name="loginUrl" value="/login"/>
         <property name="successUrl" value="/home"/>
         <property name="unauthorizedUrl" value="/unauthorized"/>
         <!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
         <!-- defined will be automatically acquired and available via its beanName in chain        -->
         <!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
-        <!-- <property name="filters">
+        <!--
+        <property name="filters">
             <util:map>
                 <entry key="anAlias" value-ref="someFilter"/>
             </util:map>
-        </property> -->
+        </property>
+        -->
         <property name="filterChainDefinitions">
             <value>
                 #/docs/** = authc, perms[document:read]
-                /admin = authc, roles[adminfile], roles[adminldap], roles[adminpam]
+                /admin = authc, roles[admin]
                 /home = authc
                 /login = anon
                 /index = anon
