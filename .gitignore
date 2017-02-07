@@ -184,6 +184,7 @@ tags
 # Package Files #
 *.jar
 !tools/**/*.jar
+!proactive-iam-api/libs/*.jar
 *.war
 *.ear
 
