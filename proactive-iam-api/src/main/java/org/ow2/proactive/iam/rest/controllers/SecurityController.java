@@ -29,7 +29,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.ow2.proactive.iam.rest.commands.LoginCommand;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,7 +61,7 @@ public class SecurityController {
         return "home";
     }
 
-    @RequiresRoles("admin")
+    //@RequiresRoles("admin*")
     @RequiresAuthentication
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public String showAdminPage(Model model, @ModelAttribute LoginCommand command) {

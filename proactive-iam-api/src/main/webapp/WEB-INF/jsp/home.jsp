@@ -32,17 +32,13 @@
     <div class="content">
 
         <p>
-            <shiro:hasRole name="admin">
+            <shiro:hasAnyRoles name="adminfile,adminldap,adminpam">
                 Admin user! => <a href="<c:url value="/admin"/>">Admin page</a>
-            </shiro:hasRole>
+            </shiro:hasAnyRoles>
 
-            <shiro:hasRole name="user">
-                Regular user.
-            </shiro:hasRole>
-
-            <shiro:lacksRole name="admin">
+            <shiro:hasAnyRoles name="userfile,userldap,userpam">
                 Not an admin user, but still you can try accessing the <a href="<c:url value="/admin"/>">Admin page</a> B-)
-            </shiro:lacksRole>
+            </shiro:hasAnyRoles>
         </p>
     </div>
 </div>

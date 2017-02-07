@@ -433,7 +433,7 @@ public class LdapRealm extends AuthorizingRealm {
     protected AuthorizationInfo queryForAuthorizationInfo(PrincipalCollection principals,
             LdapContextFactory ldapContextFactory) throws NamingException {
 
-        String username = (String) getAvailablePrincipal(principals);
+        String username = getAvailablePrincipal(principals).toString();
 
         // Perform context search
         LdapContext ldapContext = ldapContextFactory.getSystemLdapContext();

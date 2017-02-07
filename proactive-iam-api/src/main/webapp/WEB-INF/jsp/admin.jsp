@@ -34,6 +34,18 @@
         <p>
             You are in the admin page!
         </p>
+
+        <shiro:hasRole name="adminfile">
+            Logged via INI
+        </shiro:hasRole>
+
+        <shiro:hasRole name="adminldap">
+            Logged via LDAP
+        </shiro:hasRole>
+
+        <shiro:hasRole name="adminpam">
+            Logged via PAM
+        </shiro:hasRole>
     </div>
 </div>
 

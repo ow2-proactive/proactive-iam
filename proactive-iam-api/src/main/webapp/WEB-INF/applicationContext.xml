@@ -11,11 +11,27 @@
 
     <context:component-scan base-package="org.ow2.proactive.iam"/>
 
+    <bean id="authcStrategy" class="org.apache.shiro.authc.pam.FirstSuccessfulStrategy"/>
+
+    <bean id="permissionResolver" class="org.apache.shiro.authz.permission.WildcardPermissionResolver"/>
+
+    <bean id="authenticatorModular" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <property name="authenticationStrategy" ref="authcStrategy"/>
+    </bean>
+
+    <bean id="authorizerModular" class="org.apache.shiro.authz.ModularRealmAuthorizer">
+        <property name="permissionResolver"><null/></property>
+        <property name="rolePermissionResolver"><null/></property>
+    </bean>
+
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="authenticator" ref="authenticatorModular"/>
+        <property name="authorizer" ref="authorizerModular"/>
         <property name="realms">
             <list>
                 <ref bean="iniRealm"/>
                 <ref bean="ldapRealm"/>
+                <ref bean="pamRealm"/>
             </list>
         </property>
 
@@ -26,6 +42,7 @@
 
     <bean id="iniRealm" class="org.apache.shiro.realm.text.IniRealm">
         <property name="resourcePath" value="classpath:shiro.ini"/>
+        <property name="permissionResolver" ref="permissionResolver"/>
     </bean>
 
     <!--<bean id="ldapRealm" class="org.apache.shiro.realm.activedirectory.ActiveDirectoryRealm">-->
@@ -37,11 +54,15 @@
         <property name="principalSuffix" value=""/>
         <property name="groupRolesMap">
             <map>
-                <entry key="cn=admin,ou=groups,dc=activeeon,dc=com" value="admin"/>
-                <entry key="cn=user,ou=groups,dc=activeeon,dc=com" value="user"/>
+                <entry key="cn=admin,ou=groups,dc=activeeon,dc=com" value="adminldap"/>
+                <entry key="cn=user,ou=groups,dc=activeeon,dc=com" value="userldap"/>
             </map>
         </property>
         <property name="searchFilter" value="(&amp;(objectClass=*)(cn={0}))"/>
+    </bean>
+
+    <bean id="pamRealm" class="org.ow2.proactive.iam.realms.PamRealm">
+        <property name="service" value="passwd"/>
     </bean>
 
     <bean id="ldapContextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
@@ -84,7 +105,7 @@
         <property name="filterChainDefinitions">
             <value>
                 #/docs/** = authc, perms[document:read]
-                #/admin = authc, roles[admin]
+                /admin = authc, roles[adminfile], roles[adminldap], roles[adminpam]
                 /home = authc
                 /login = anon
                 /index = anon
