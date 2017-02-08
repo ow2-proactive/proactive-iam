@@ -12,9 +12,6 @@
     <context:component-scan base-package="org.ow2.proactive.iam"/>
 
     <bean id="authcStrategy" class="org.apache.shiro.authc.pam.FirstSuccessfulStrategy"/>
-
-    <bean id="permissionResolver" class="org.apache.shiro.authz.permission.WildcardPermissionResolver"/>
-
     <bean id="authenticatorModular" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
         <property name="authenticationStrategy" ref="authcStrategy"/>
     </bean>
@@ -34,10 +31,9 @@
                 <ref bean="pamRealm"/>
             </list>
         </property>
-
         <!-- By default the servlet container sessions will be used.  Uncomment this line
              to use shiro's native sessions (see the JavaDoc for more): -->
-        <property name="sessionMode" value="native"/>
+        <!--<property name="sessionMode" value="native"/>-->
     </bean>
 
     <!-- INI Realm -->
@@ -49,6 +45,23 @@
         <property name="credentialsMatcher" ref="passwordMatcher"/>
     </bean>
 
+    <!-- LDAP Realm -->
+    <bean id="ldapContextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
+        <!--<property name="url" value="ldap://192.168.1.136:389"/>-->
+        <property name="url" value="ldaps://192.168.1.136:636"/>
+        <property name="authenticationMechanism" value="simple"/>
+        <!-- If necessary, customize context with JNDI environment parameters -->
+        <!--
+        <property name="environment">
+            <map>
+                <entry key="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+                <entry key="java.naming.security.authentication" value="simple"/>
+                <entry key="java.naming.provider.url" value="ldap://192.168.1.136:636"/>
+                <entry key="java.naming.security.protocol" value="ssl"/>
+            </map>
+        </property>
+        -->
+    </bean>
     <!--<bean id="ldapRealm" class="org.apache.shiro.realm.activedirectory.ActiveDirectoryRealm">-->
     <!--<bean id="ldapRealm" class="org.apache.shiro.realm.ldap.DefaultLdapRealm">-->
     <bean id="ldapRealm" class="org.ow2.proactive.iam.realms.LdapRealm">
@@ -66,6 +79,7 @@
         <property name="searchFilter" value="(&amp;(objectClass=*)(cn={0}))"/>
     </bean>
 
+    <!-- PAM Realm -->
     <bean id="pamRealm" class="org.ow2.proactive.iam.realms.PamRealm">
         <property name="service" value="passwd"/>
         <property name="groupRolesMap">
@@ -75,23 +89,6 @@
                 <entry key="pam" value="pam"/>
             </map>
         </property>
-    </bean>
-
-    <bean id="ldapContextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
-        <!--<property name="url" value="ldap://192.168.1.136:389"/>-->
-        <property name="url" value="ldaps://192.168.1.136:636"/>
-        <property name="authenticationMechanism" value="simple"/>
-        <!-- If necessary, customize context with JNDI environment parameters -->
-        <!--
-        <property name="environment">
-            <map>
-                <entry key="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/>
-                <entry key="java.naming.security.authentication" value="simple"/>
-                <entry key="java.naming.provider.url" value="ldap://192.168.1.136:636"/>
-                <entry key="java.naming.security.protocol" value="ssl"/>
-            </map>
-        </property>
-        -->
     </bean>
 
     <!-- Default Shiro's LDAP context Factory (Deprecated) -->
@@ -107,20 +104,15 @@
         <property name="loginUrl" value="/login"/>
         <property name="successUrl" value="/home"/>
         <property name="unauthorizedUrl" value="/unauthorized"/>
-        <!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
-        <!-- defined will be automatically acquired and available via its beanName in chain        -->
-        <!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
-        <!--
         <property name="filters">
             <util:map>
-                <entry key="anAlias" value-ref="someFilter"/>
+                <entry key="anyofroles" value-ref="anyOfRoles"/>
             </util:map>
         </property>
-        -->
         <property name="filterChainDefinitions">
             <value>
                 #/docs/** = authc, perms[document:read]
-                /admin = authc, roles[admin]
+                /admin = authc, anyofroles[admin]
                 /home = authc
                 /login = anon
                 /index = anon
@@ -131,21 +123,19 @@
     <!-- Define any javax.servlet.Filter beans you want anywhere in this application context.   -->
     <!-- They will automatically be acquired by the 'shiroFilter' bean above and made available -->
     <!-- to the 'filterChainDefinitions' property.  Or you can manually/explicitly add them     -->
-    <!-- to the shiroFilter's 'filters' Map if desired. See its JavaDoc for more details.
-    <bean id="someFilter" class="..."/>
-    <bean id="anotherFilter" class="..."> ... </bean> -->
+    <!-- to the shiroFilter's 'filters' Map if desired. See its JavaDoc for more details. -->
+    <bean id="anyOfRoles" class="org.ow2.proactive.iam.filters.AnyOfRolesAuthorizationFilter"/>
 
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 
-    <!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
-    <!-- the lifecycleBeanProcessor has run: -->
+    <!-- Enable Shiro Annotations for Spring-configured beans.  Only run after the lifecycleBeanProcessor has run: -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
 
-    <!-- Secure Spring remoting:  Ensure any Spring Remoting method invocations -->
-    <!-- can be associated with a Subject for security checks.
+    <!-- Secure Spring remoting:  Ensure any Spring Remoting method invocations can be associated with a Subject for security checks. -->
+    <!--
     <bean id="secureRemoteInvocationExecutor" class="org.apache.shiro.spring.remoting.SecureRemoteInvocationExecutor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
