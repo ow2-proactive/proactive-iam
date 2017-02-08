@@ -40,9 +40,13 @@
         <property name="sessionMode" value="native"/>
     </bean>
 
+    <!-- INI Realm -->
+    <bean id="permissionResolver" class="org.apache.shiro.authz.permission.WildcardPermissionResolver"/>
+    <bean id="passwordMatcher" class="org.apache.shiro.authc.credential.PasswordMatcher"/>
     <bean id="iniRealm" class="org.apache.shiro.realm.text.IniRealm">
         <property name="resourcePath" value="classpath:shiro.ini"/>
         <property name="permissionResolver" ref="permissionResolver"/>
+        <property name="credentialsMatcher" ref="passwordMatcher"/>
     </bean>
 
     <!--<bean id="ldapRealm" class="org.apache.shiro.realm.activedirectory.ActiveDirectoryRealm">-->
