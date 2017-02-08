@@ -30,7 +30,7 @@
         <property name="realms">
             <list>
                 <ref bean="iniRealm"/>
-                <!--<ref bean="ldapRealm"/>-->
+                <ref bean="ldapRealm"/>
                 <ref bean="pamRealm"/>
             </list>
         </property>
@@ -66,9 +66,9 @@
         <property name="service" value="passwd"/>
         <property name="groupRolesMap">
             <map>
-                <entry key="vinseon" value="admin"/>
-                <entry key="vins" value="user"/>
-                <entry key="ssh" value="pam"/>
+                <entry key="adminpam" value="admin"/>
+                <entry key="userpam" value="user"/>
+                <entry key="pam" value="pam"/>
             </map>
         </property>
     </bean>
