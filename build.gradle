@@ -54,6 +54,7 @@ allprojects {
 
         mavenCentral()
         jcenter()
+        maven { url 'http://repository.activeeon.com/content/groups/proactive/' }
     }
 
     uploadArchives {
