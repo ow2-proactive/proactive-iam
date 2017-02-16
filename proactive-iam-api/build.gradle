@@ -94,7 +94,7 @@ dependencies {
 
     // LibPAM
     //compile 'net.sf.jpam:jpam:1.1'
-    compile 'org.ow2.proactive:libpam4j:1.9-SNAPSHOT'
+    compile 'org.ow2.proactive:libpam4j:1.9-proactive'
 
     testCompile 'com.jayway.restassured:rest-assured:2.9.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test:1.4.3.RELEASE'
