@@ -26,15 +26,13 @@
 package org.ow2.proactive.iam.rest;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.google.common.base.Predicate;
@@ -50,25 +48,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * @author ActiveEon Team
  */
-@SpringBootApplication
-@EnableAutoConfiguration(exclude = { MultipartAutoConfiguration.class })
+@Configuration
 @EnableSwagger2
+@ImportResource("classpath:iam-spring-context.xml")
 @PropertySource("classpath:application.properties")
+@SpringBootApplication
 public class Application extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-    }
-
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.favorPathExtension(false)
-                  .favorParameter(true)
-                  .parameterName("format")
-                  .ignoreAcceptHeader(true)
-                  .useJaf(false)
-                  .defaultContentType(MediaType.APPLICATION_JSON)
-                  .mediaType("json", MediaType.APPLICATION_JSON);
     }
 
     @Bean
@@ -97,6 +85,7 @@ public class Application extends WebMvcConfigurerAdapter {
     }
 
     private Predicate<String> allowedPaths() {
-        return PathSelectors.regex("/users.*");
+        return PathSelectors.regex("/proactive.*");
     }
+
 }

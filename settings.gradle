@@ -2,3 +2,8 @@ rootProject.name = 'proactive-iam'
 
 include 'proactive-iam-api-client'
 include 'proactive-iam-api'
+include 'proactive-iam-core'
+include 'proactive-iam-annotation'
+include 'proactive-iam-aop'
+include 'proactive-iam-aop:proactive-iam-aop-aspectj'
+include 'proactive-iam-aop:proactive-iam-aop-spring'

@@ -1,0 +1,117 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+    <!-- Spring AOP auto-proxy creation (required to support Shiro annotations) -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+
+    <!-- =========================================================
+         Shiro Components
+         ========================================================= -->
+
+    <!-- Shiro's main business-tier object for web-enabled applications
+         (use org.apache.shiro.web.mgt.DefaultWebSecurityManager instead when there is no web environment)-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!-- Single realm app (realm configured next, below).  If you have multiple realms, use the 'realms'
+      property instead. -->
+        <property name="realm" ref="iniRealm"/>
+        <!--property name="realms">
+        <list>
+            <ref bean="ldapRealm"/>
+            <ref bean="iniRealm"/>
+        </list>
+        </property-->
+
+        <property name="cacheManager" ref="ehcache"/>
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <bean id="iniRealm" class="org.apache.shiro.realm.text.IniRealm">
+        <property name="resourcePath" value="classpath:shiro.ini"/>
+        <property name="credentialsMatcher" ref="passwordMatcher"/>
+    </bean>
+
+    <bean id="passwordMatcher" class="org.apache.shiro.authc.credential.PasswordMatcher"/>
+
+    <bean id="ehcache" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml"/>
+    </bean>
+
+    <!-- LDAP Realm -->
+    <bean id="ldapContextFactory" class="org.apache.shiro.realm.ldap.JndiLdapContextFactory">
+        <!--<property name="url" value="ldap://192.168.1.136:389"/>-->
+        <property name="url" value="ldaps://192.168.1.136:636"/>
+        <property name="authenticationMechanism" value="simple"/>
+        <!-- If necessary, customize context with JNDI environment parameters -->
+        <!--
+        <property name="environment">
+            <map>
+                <entry key="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+                <entry key="java.naming.security.authentication" value="simple"/>
+                <entry key="java.naming.provider.url" value="ldap://192.168.1.136:636"/>
+                <entry key="java.naming.security.protocol" value="ssl"/>
+            </map>
+        </property>
+        -->
+    </bean>
+    <!--<bean id="ldapRealm" class="org.apache.shiro.realm.activedirectory.ActiveDirectoryRealm">-->
+    <!--<bean id="ldapRealm" class="org.apache.shiro.realm.ldap.DefaultLdapRealm">-->
+    <bean id="ldapRealm" class="org.ow2.proactive.iam.core.realms.LdapRealm">
+        <property name="userDnTemplate" value="cn={0},ou=users,dc=activeeon,dc=com"/>
+        <property name="contextFactory" ref="ldapContextFactory" />
+        <property name="searchBase" value="dc=activeeon,dc=com"/>
+        <property name="principalSuffix" value=""/>
+        <property name="groupRolesMap">
+            <map>
+                <entry key="cn=admin,ou=groups,dc=activeeon,dc=com" value="admin"/>
+                <entry key="cn=user,ou=groups,dc=activeeon,dc=com" value="user"/>
+                <entry key="cn=ldap,ou=groups,dc=activeeon,dc=com" value="ldap"/>
+            </map>
+        </property>
+        <property name="searchFilter" value="(&amp;(objectClass=*)(cn={0}))"/>
+    </bean>
+
+    <!-- PAM Realm -->
+    <bean id="pamRealm" class="org.ow2.proactive.iam.core.realms.PamRealm">
+        <property name="service" value="passwd"/>
+        <property name="groupRolesMap">
+            <map>
+                <entry key="adminpam" value="admin"/>
+                <entry key="userpam" value="user"/>
+                <entry key="pam" value="pam"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- native shiro session-->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="globalSessionTimeout" value="3600000"/>
+        <property name="sessionIdUrlRewritingEnabled" value="false"/>
+    </bean>
+
+    <!-- Post processor that automatically invokes init() and destroy() methods -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <bean id="authorizationAttributeSourceAdvisor" class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/login.html"/>
+        <property name="successUrl" value="/home.html"/>
+        <property name="unauthorizedUrl" value="/unauthorized"/>
+        <property name="filterChainDefinitions">
+            <value>
+                / = noSessionCreation, anon
+                /login.html = noSessionCreation, anon
+                /login = anon
+                /scheduler/rest/** = noSessionCreation, authc
+                /home = noSessionCreation
+                /account-info = noSessionCreation
+            </value>
+        </property>
+    </bean>
+
+</beans>

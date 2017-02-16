@@ -25,6 +25,9 @@
  */
 package org.ow2.proactive.iam.rest.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -32,9 +35,12 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import lombok.extern.log4j.Log4j2;
 
 
 /**
@@ -42,11 +48,37 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since 17/01/17
  */
 @ControllerAdvice
+@Log4j2
 public class ApplicationExceptionHandler {
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({ AuthenticationException.class, AuthorizationException.class, UnknownAccountException.class,
-                        UnauthenticatedException.class, IncorrectCredentialsException.class,
-                        UnauthorizedException.class })
-    public void unauthorized() {
+    @ExceptionHandler({ AuthorizationException.class, UnauthorizedException.class })
+    public String unauthorized(AuthorizationException e, Model model) {
+        // you could return a 404 here instead (this is how github handles 403, so the user does NOT know there is a
+        // resource at that location)
+        log.debug("AuthorizationException was thrown", e);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("status", HttpStatus.UNAUTHORIZED.value());
+        map.put("message", "You are not authorized");
+        model.addAttribute("errors", map);
+
+        return "error";
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({ AuthenticationException.class, UnknownAccountException.class, UnauthenticatedException.class,
+                        IncorrectCredentialsException.class })
+    public String unauthenticated(AuthorizationException e, Model model) {
+        // you could return a 404 here instead (this is how github handles 403, so the user does NOT know there is a
+        // resource at that location)
+        log.debug("AuthorizationException was thrown", e);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("status", HttpStatus.FORBIDDEN.value());
+        map.put("message", "You are not authenticated!");
+        model.addAttribute("errors", map);
+
+        return "login";
     }
 }

@@ -4,6 +4,8 @@ src/generated
 *.iml
 .idea
 .gradle
+.classpath
+.project
 gradle/ext/
 *.log
 

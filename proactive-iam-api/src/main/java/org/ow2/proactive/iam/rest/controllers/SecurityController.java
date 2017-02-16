@@ -25,18 +25,30 @@
  */
 package org.ow2.proactive.iam.rest.controllers;
 
+import java.util.Collection;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.ow2.proactive.iam.rest.commands.LoginCommand;
-import org.ow2.proactive.iam.rest.validators.LoginValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.CollectionUtils;
+import org.apache.shiro.util.StringUtils;
+import org.ow2.proactive.iam.core.AuthorizationInfo;
+import org.ow2.proactive.iam.core.exception.IamAuthenticationException;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import lombok.extern.log4j.Log4j2;
 
 
 /**
@@ -44,47 +56,112 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @since 18/01/17
  */
 @Controller
+@Log4j2
 public class SecurityController {
-
-    private final LoginValidator loginValidator;
-
-    @Autowired
-    public SecurityController(LoginValidator loginValidator) {
-        this.loginValidator = loginValidator;
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String showLoginForm(Model model, @ModelAttribute LoginCommand command) {
-        return "login";
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(Model model, @ModelAttribute LoginCommand command, BindingResult errors) {
-        loginValidator.validate(command, errors);
-
-        if (errors.hasErrors()) {
-            return showLoginForm(model, command);
-        }
-
-        UsernamePasswordToken token = new UsernamePasswordToken(command.getUsername(),
-                                                                command.getPassword(),
-                                                                command.isRememberMe());
-        try {
-            SecurityUtils.getSubject().login(token);
-        } catch (AuthenticationException e) {
-            errors.reject("error.login.generic", "Invalid username or password.  Please try again.");
-        }
-
-        if (errors.hasErrors()) {
-            return showLoginForm(model, command);
-        } else {
-            return "redirect:/s/home";
-        }
-    }
 
     @RequestMapping("/logout")
     public String logout() {
         SecurityUtils.getSubject().logout();
-        return "redirect:/";
+        return "redirect:/login.html";
     }
+
+    @RequestMapping({ "/", "/login.html" })
+    public String root() {
+        return "login";
+    }
+
+    @RequestMapping("/login")
+    public String login(String username, char[] password) {
+        Subject currentUser = SecurityUtils.getSubject();
+        if (StringUtils.hasText(username) && password != null) {
+            try {
+                currentUser.login(new UsernamePasswordToken(username, password));
+                if (currentUser.isAuthenticated()) {
+                    Session session = currentUser.getSession();
+                    // TODO need a service class to transform shiro permissions into AuthorizationInfo
+                    session.setAttribute("authorization",
+                                         new AuthorizationInfo("admin", "liu", session.getId().toString()));
+                }
+            } catch (Exception e) {
+                log.error(e.getLocalizedMessage(), e);
+                return "login";
+            }
+            return "redirect:home";
+        } else {
+            return "login";
+        }
+    }
+
+    @RequestMapping(value = "/authentication", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public AuthorizationInfo authenticate(HttpServletRequest request) {
+        String requestedSessionId = request.getHeader("sessionId") == null ? request.getRequestedSessionId()
+                                                                           : request.getHeader("sessionId");
+
+        Subject subject = new Subject.Builder().sessionId(requestedSessionId).buildSubject();
+
+        if (subject != null && subject.isAuthenticated()) {
+            return (AuthorizationInfo) subject.getSession().getAttribute("authorization");
+        }
+        throw new IamAuthenticationException("Not authenticated!");
+    }
+
+    @RequestMapping("/home")
+    @RequiresAuthentication
+    public String home(HttpServletRequest request, Model model) {
+
+        String name = "World";
+
+        String hostname = request.getRemoteHost();
+        Subject subject = new Subject.Builder().sessionId(request.getRequestedSessionId()).buildSubject();
+        Session session = subject.getSession(false);
+
+        if (subject != null && session.getHost().equals(hostname) && subject.isAuthenticated()) {
+            PrincipalCollection principalCollection = subject.getPrincipals();
+
+            if (principalCollection != null && !principalCollection.isEmpty()) {
+                Collection<Map> principalMaps = subject.getPrincipals().byType(Map.class);
+                if (CollectionUtils.isEmpty(principalMaps)) {
+                    name = subject.getPrincipal().toString();
+                } else {
+                    name = (String) principalMaps.iterator().next().get("username");
+                }
+            }
+
+            model.addAttribute("name", name);
+            model.addAttribute("subject", subject);
+
+            return "hello";
+        } else {
+            return "login";
+        }
+
+    }
+
+    @RequestMapping("/account-info")
+    @RequiresAuthentication
+    @RequiresRoles("admin")
+    public String account(HttpServletRequest request, Model model) {
+
+        String name = "World";
+
+        String hostname = request.getRemoteHost();
+        Subject subject = new Subject.Builder().sessionId(request.getRequestedSessionId()).buildSubject();
+        Session session = subject.getSession(false);
+
+        if (subject != null && session.getHost().equals(hostname) && subject.isAuthenticated()) {
+            PrincipalCollection principalCollection = subject.getPrincipals();
+
+            if (principalCollection != null && !principalCollection.isEmpty()) {
+                name = principalCollection.getPrimaryPrincipal().toString();
+            }
+
+            model.addAttribute("name", name);
+
+            return "account-info";
+        }
+
+        return "login";
+    }
+
 }

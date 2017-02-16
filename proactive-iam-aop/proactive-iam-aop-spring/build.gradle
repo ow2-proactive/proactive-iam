@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':proactive-iam-annotation')
+    compile project(':proactive-iam-core')
+
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compile 'org.springframework:spring-aop:4.2.5.RELEASE'
+    compile 'org.aspectj:aspectjrt:1.8.9'
+}
