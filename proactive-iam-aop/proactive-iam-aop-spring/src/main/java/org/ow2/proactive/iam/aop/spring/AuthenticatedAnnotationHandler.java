@@ -32,8 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.ow2.proactive.iam.annotation.RequiresIamAuthentication;
+import org.ow2.proactive.iam.annotation.RequiresAuthentication;
 import org.ow2.proactive.iam.core.AuthorizationContext;
 import org.ow2.proactive.iam.core.AuthorizationInfo;
 import org.ow2.proactive.iam.core.exception.IamAuthenticationException;
@@ -59,7 +58,7 @@ import lombok.extern.log4j.Log4j2;
 @Component
 @Aspect
 @Log4j2
-public class IamAuthenticationAnnotationHandler {
+public class AuthenticatedAnnotationHandler extends AnnotationHandler {
 
     private final static String SESSION_ID = "sessionId";
 
@@ -70,13 +69,8 @@ public class IamAuthenticationAnnotationHandler {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Pointcut(value = "execution(public * *(..))")
-    public void anyPublicMethod() {
-
-    }
-
     @Around("anyPublicMethod() && @annotation(authenticationAnnotation) && args(request,..)")
-    public Object authentication(ProceedingJoinPoint joinPoint, RequiresIamAuthentication authenticationAnnotation,
+    public Object assertAuthentication(ProceedingJoinPoint joinPoint, RequiresAuthentication authenticationAnnotation,
             HttpServletRequest request) throws Throwable {
 
         if (Strings.isNullOrEmpty(iamServerUrl)) {

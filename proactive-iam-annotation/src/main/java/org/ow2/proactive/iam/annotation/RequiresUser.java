@@ -23,11 +23,19 @@
  * If needed, contact us to obtain a release under GPL Version 2 or 3
  * or a different license than the AGPL.
  */
-package org.ow2.proactive.iam.core;
+package org.ow2.proactive.iam.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 /**
  * @author ActiveEon Team
  * @since 16/02/17
  */
-public class IamAuthenticationService {
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RequiresUser {
 }
