@@ -47,6 +47,7 @@ import org.jvnet.libpam.UnixUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * A Unix-style <a href="http://www.kernel.org/pub/linux/libs/pam/index.html">PAM</a>
  * {@link org.apache.shiro.realm.Realm Realm} that uses <a href="https://github.com/kohsuke/libpam4j">libpam4j</a>
@@ -124,19 +125,16 @@ public class PamRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(
-            AuthenticationToken token) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         UnixUser user;
         try {
-            user = getPam().authenticate(upToken.getUsername(),
-                    new String(upToken.getPassword()));
+            user = getPam().authenticate(upToken.getUsername(), new String(upToken.getPassword()));
         } catch (PAMException e) {
             // Until libpam4j provides more details, we can only throw the top-level exception
             throw new AuthenticationException(e);
         }
-        return new SimpleAuthenticationInfo(new UnixUserPrincipal(user), upToken.getPassword(),
-                getName());
+        return new SimpleAuthenticationInfo(new UnixUserPrincipal(user), upToken.getPassword(), getName());
     }
 
     @Override
@@ -166,6 +164,7 @@ public class PamRealm extends AuthorizingRealm {
     private static class UnixUserPrincipal {
 
         private final UnixUser unixUser;
+
         UnixUserPrincipal(UnixUser unixUser) {
             this.unixUser = unixUser;
         }

@@ -33,6 +33,7 @@ import javax.servlet.ServletResponse;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 
+
 /**
  * Allows access if current user has at least one role of the specified list.
  * <br/>
@@ -47,8 +48,8 @@ import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 public class AnyOfRolesAuthorizationFilter extends RolesAuthorizationFilter {
 
     @Override
-    public boolean isAccessAllowed(ServletRequest request, ServletResponse response,
-                                   Object mappedValue) throws IOException {
+    public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)
+            throws IOException {
 
         final Subject subject = getSubject(request, response);
         final String[] rolesArray = (String[]) mappedValue;
